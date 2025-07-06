@@ -1,0 +1,537 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gig Identity</title>
+    <link href="./dist/output.css" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="./favicon.ico">
+</head>
+<body class="bg-gradient-to-br from-indigo-900 to-blue-800 text-white min-h-screen p-6">
+    <div class="container mx-auto max-w-4xl">
+        <h1 class="text-4xl font-extrabold mb-8 text-center bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-500">Gig Identity</h1>
+        
+        <!-- Hero Section with Message -->
+        <div class="text-center mb-12 p-6 bg-gray-800 rounded-xl shadow-lg transform hover:scale-105 transition-transform duration-300">
+            <p class="text-xl font-semibold text-cyan-300">Empower your gig career with Gig Identity – a decentralized platform where workers build verifiable profiles and employers ensure trust, all on the blockchain!</p>
+        </div>
+
+        <div class="mb-10 bg-gray-800 p-6 rounded-xl shadow-lg transform hover:scale-105 transition-transform duration-300">
+            <h2 class="text-2xl font-bold mb-4 text-cyan-400">Create Profile</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <input id="name" type="text" placeholder="Name" class="border border-gray-600 bg-gray-700 text-white p-3 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                <input id="skills" type="text" placeholder="Skills (comma-separated)" class="border border-gray-600 bg-gray-700 text-white p-3 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-cyan-500">
+            </div>
+            <button id="createProfile" class="mt-4 bg-cyan-500 text-gray-900 font-semibold p-3 rounded-lg w-full sm:w-auto hover:bg-cyan-600 transition-colors duration-200">Create Profile</button>
+        </div>
+
+        <div id="profile" class="mb-10 bg-gray-800 p-6 rounded-xl shadow-lg"></div>
+
+        <div class="mb-10 bg-gray-800 p-6 rounded-xl shadow-lg transform hover:scale-105 transition-transform duration-300">
+            <h2 class="text-2xl font-bold mb-4 text-cyan-400">Add Work History</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <input id="jobTitle" type="text" placeholder="Job Title" class="border border-gray-600 bg-gray-700 text-white p-3 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                <input id="jobDescription" type="text" placeholder="Description" class="border border-gray-600 bg-gray-700 text-white p-3 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                <input id="startDate" type="date" class="border border-gray-600 bg-gray-700 text-white p-3 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                <input id="endDate" type="date" class="border border-gray-600 bg-gray-700 text-white p-3 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                <input id="employerAddress" type="text" placeholder="Employer Address (e.g., 0x123...)" class="border border-gray-600 bg-gray-700 text-white p-3 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-cyan-500">
+            </div>
+            <button id="addWork" class="mt-4 bg-cyan-500 text-gray-900 font-semibold p-3 rounded-lg w-full sm:w-auto hover:bg-cyan-600 transition-colors duration-200">Add Work</button>
+        </div>
+
+        <div class="mb-10 bg-gray-800 p-6 rounded-xl shadow-lg transform hover:scale-105 transition-transform duration-300">
+            <h2 class="text-2xl font-bold mb-4 text-cyan-400">Work History</h2>
+            <label for="workerAddress" class="block text-gray-300 mb-2">Enter worker’s address to view or verify their work history:</label>
+            <div class="flex flex-col sm:flex-row gap-4">
+                <input id="workerAddress" type="text" placeholder="Worker Address (e.g., 0x123...)" class="border border-gray-600 bg-gray-700 text-white p-3 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                <button id="loadWorkerHistory" class="bg-cyan-500 text-gray-900 font-semibold p-3 rounded-lg w-full sm:w-auto hover:bg-cyan-600 transition-colors duration-200">Load Worker History</button>
+            </div>
+            <div id="workHistory" class="mt-6"></div>
+        </div>
+
+        <div class="mb-10 bg-gray-800 p-6 rounded-xl shadow-lg transform hover:scale-105 transition-transform duration-300">
+            <h2 class="text-2xl font-bold mb-4 text-cyan-400">Add Credential</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <input id="issuer" type="text" placeholder="Issuer" class="border border-gray-600 bg-gray-700 text-white p-3 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                <input id="credentialTitle" type="text" placeholder="Credential Title" class="border border-gray-600 bg-gray-700 text-white p-3 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                <input id="credentialDescription" type="text" placeholder="Description" class="border border-gray-600 bg-gray-700 text-white p-3 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-cyan-500">
+            </div>
+            <button id="addCredential" class="mt-4 bg-cyan-500 text-gray-900 font-semibold p-3 rounded-lg w-full sm:w-auto hover:bg-cyan-600 transition-colors duration-200">Add Credential</button>
+        </div>
+
+        <div class="mb-10 bg-gray-800 p-6 rounded-xl shadow-lg">
+            <h2 class="text-2xl font-bold mb-4 text-cyan-400">Credentials</h2>
+            <div id="credentials"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.8.0/dist/web3.min.js"></script>
+    <script>
+        const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+        const contractABI = [
+            {
+                "inputs": [
+                    {
+                        "internalType": "string",
+                        "name": "_name",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "string[]",
+                        "name": "_skills",
+                        "type": "string[]"
+                    }
+                ],
+                "name": "createProfile",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "string",
+                        "name": "_jobTitle",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "_description",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "_startDate",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "_endDate",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "_employer",
+                        "type": "address"
+                    }
+                ],
+                "name": "addWorkHistory",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "string",
+                        "name": "_issuer",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "_title",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "_description",
+                        "type": "string"
+                    }
+                ],
+                "name": "addCredential",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "_worker",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "_index",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "verifyWork",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "_user",
+                        "type": "address"
+                    }
+                ],
+                "name": "getProfile",
+                "outputs": [
+                    {
+                        "components": [
+                            {
+                                "internalType": "string",
+                                "name": "name",
+                                "type": "string"
+                            },
+                            {
+                                "internalType": "string[]",
+                                "name": "skills",
+                                "type": "string[]"
+                            }
+                        ],
+                        "internalType": "struct GigIdentity.Profile",
+                        "name": "",
+                        "type": "tuple"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "_user",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "_index",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "getWorkHistory",
+                "outputs": [
+                    {
+                        "components": [
+                            {
+                                "internalType": "string",
+                                "name": "jobTitle",
+                                "type": "string"
+                            },
+                            {
+                                "internalType": "string",
+                                "name": "description",
+                                "type": "string"
+                            },
+                            {
+                                "internalType": "string",
+                                "name": "startDate",
+                                "type": "string"
+                            },
+                            {
+                                "internalType": "string",
+                                "name": "endDate",
+                                "type": "string"
+                            },
+                            {
+                                "internalType": "address",
+                                "name": "employer",
+                                "type": "address"
+                            },
+                            {
+                                "internalType": "bool",
+                                "name": "verified",
+                                "type": "bool"
+                            }
+                        ],
+                        "internalType": "struct GigIdentity.WorkHistory",
+                        "name": "",
+                        "type": "tuple"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "_user",
+                        "type": "address"
+                    }
+                ],
+                "name": "getWorkHistoryCount",
+                "outputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "",
+                        "type": "uint256"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "_user",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "_index",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "getCredential",
+                "outputs": [
+                    {
+                        "components": [
+                            {
+                                "internalType": "string",
+                                "name": "issuer",
+                                "type": "string"
+                            },
+                            {
+                                "internalType": "string",
+                                "name": "title",
+                                "type": "string"
+                            },
+                            {
+                                "internalType": "string",
+                                "name": "description",
+                                "type": "string"
+                            }
+                        ],
+                        "internalType": "struct GigIdentity.Credential",
+                        "name": "",
+                        "type": "tuple"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "_user",
+                        "type": "address"
+                    }
+                ],
+                "name": "getCredentialCount",
+                "outputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "",
+                        "type": "uint256"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "",
+                        "type": "address"
+                    }
+                ],
+                "name": "profiles",
+                "outputs": [
+                    {
+                        "internalType": "string",
+                        "name": "name",
+                        "type": "string"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            }
+        ];
+
+        let web3;
+        let contract;
+        let accounts;
+
+        async function init() {
+            if (typeof window.ethereum !== 'undefined') {
+                web3 = new Web3(window.ethereum);
+                try {
+                    accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                    contract = new web3.eth.Contract(contractABI, contractAddress);
+                    loadProfile();
+                    loadCredentials();
+                    const workerAddress = document.getElementById('workerAddress').value.trim();
+                    if (workerAddress && web3.utils.isAddress(workerAddress)) {
+                        loadWorkHistory(workerAddress);
+                    } else {
+                        loadWorkHistory(accounts[0]);
+                    }
+                } catch (error) {
+                    console.error("Error connecting to MetaMask:", error);
+                    alert("Failed to connect to MetaMask: " + error.message);
+                }
+            } else {
+                console.error("MetaMask is not installed!");
+                alert("Please install MetaMask to use this application.");
+            }
+        }
+
+        async function loadProfile() {
+            try {
+                const profile = await contract.methods.getProfile(accounts[0]).call();
+                document.getElementById('profile').innerHTML = `
+                    <h3 class="text-xl font-bold text-cyan-400">Profile</h3>
+                    <p class="text-gray-300"><strong>Name:</strong> ${profile.name || 'Not set'}</p>
+                    <p class="text-gray-300"><strong>Skills:</strong> ${profile.skills.length ? profile.skills.join(', ') : 'None'}</p>
+                `;
+            } catch (error) {
+                console.error("Error loading profile:", error);
+                document.getElementById('profile').innerHTML = `
+                    <h3 class="text-xl font-bold text-cyan-400">Profile</h3>
+                    <p class="text-red-400">Error loading profile: ${error.message}</p>
+                `;
+            }
+        }
+
+        async function loadWorkHistory(userAddress) {
+            try {
+                const workCount = await contract.methods.getWorkHistoryCount(userAddress).call();
+                let workHistory = '';
+                for (let i = 0; i < workCount; i++) {
+                    const work = await contract.methods.getWorkHistory(userAddress, i).call();
+                    workHistory += `
+                        <div class="border border-gray-600 p-4 mb-4 bg-gray-700 rounded-lg shadow-md transform hover:scale-102 transition-transform duration-200">
+                            <p class="text-gray-300"><strong>Job Title:</strong> ${work.jobTitle}</p>
+                            <p class="text-gray-300"><strong>Description:</strong> ${work.description}</p>
+                            <p class="text-gray-300"><strong>Start Date:</strong> ${work.startDate}</p>
+                            <p class="text-gray-300"><strong>End Date:</strong> ${work.endDate}</p>
+                            <p class="text-gray-300"><strong>Employer:</strong> ${work.employer}</p>
+                            <p class="text-gray-300"><strong>Verified:</strong> ${work.verified ? 'Yes' : 'No'}</p>
+                            ${!work.verified && accounts[0].toLowerCase() === work.employer.toLowerCase() ? 
+                                `<button onclick="verifyWork('${userAddress}', ${i})" class="bg-green-500 text-gray-900 font-semibold p-2 rounded-lg mt-2 hover:bg-green-600 transition-colors duration-200">Verify Work</button>` : ''}
+                        </div>
+                    `;
+                }
+                document.getElementById('workHistory').innerHTML = workHistory || '<p class="text-gray-400 italic">No work history found for this address.</p>';
+            } catch (error) {
+                console.error("Error loading work history:", error);
+                document.getElementById('workHistory').innerHTML = `<p class="text-red-400">Error loading work history: ${error.message}</p>`;
+            }
+        }
+
+        async function loadCredentials() {
+            try {
+                const credentialCount = await contract.methods.getCredentialCount(accounts[0]).call();
+                let credentials = '';
+                for (let i = 0; i < credentialCount; i++) {
+                    const credential = await contract.methods.getCredential(accounts[0], i).call();
+                    credentials += `
+                        <div class="border border-gray-600 p-4 mb-4 bg-gray-700 rounded-lg shadow-md transform hover:scale-102 transition-transform duration-200">
+                            <p class="text-gray-300"><strong>Issuer:</strong> ${credential.issuer}</p>
+                            <p class="text-gray-300"><strong>Title:</strong> ${credential.title}</p>
+                            <p class="text-gray-300"><strong>Description:</strong> ${credential.description}</p>
+                        </div>
+                    `;
+                }
+                document.getElementById('credentials').innerHTML = credentials || '<p class="text-gray-400 italic">No credentials found.</p>';
+            } catch (error) {
+                console.error("Error loading credentials:", error);
+                document.getElementById('credentials').innerHTML = `<p class="text-red-400">Error loading credentials: ${error.message}</p>`;
+            }
+        }
+
+        document.getElementById('createProfile').addEventListener('click', async () => {
+            try {
+                const name = document.getElementById('name').value.trim();
+                const skills = document.getElementById('skills').value.split(',').map(s => s.trim()).filter(s => s);
+                if (!name || !skills.length) {
+                    alert("Please enter a name and at least one skill.");
+                    return;
+                }
+                await contract.methods.createProfile(name, skills).send({ from: accounts[0], gas: 1000000 });
+                loadProfile();
+                alert("Profile created successfully!");
+            } catch (error) {
+                console.error("Error creating profile:", error);
+                alert("Failed to create profile: " + error.message);
+            }
+        });
+
+        document.getElementById('addWork').addEventListener('click', async () => {
+            try {
+                const jobTitle = document.getElementById('jobTitle').value.trim();
+                const description = document.getElementById('jobDescription').value.trim();
+                const startDate = document.getElementById('startDate').value;
+                const endDate = document.getElementById('endDate').value;
+                let employerAddress = document.getElementById('employerAddress').value.trim();
+                
+                if (!jobTitle || !description || !startDate || !endDate || !employerAddress) {
+                    alert("Please fill all fields for work history.");
+                    return;
+                }
+                
+                if (!employerAddress.startsWith('0x')) {
+                    employerAddress = '0x' + employerAddress;
+                }
+                if (!web3.utils.isAddress(employerAddress)) {
+                    alert("Invalid employer address. Please enter a valid Ethereum address (e.g., 0x123...).");
+                    return;
+                }
+                
+                await contract.methods.addWorkHistory(jobTitle, description, startDate, endDate, employerAddress).send({ from: accounts[0], gas: 1000000 });
+                loadWorkHistory(accounts[0]);
+                alert("Work history added successfully!");
+            } catch (error) {
+                console.error("Error adding work history:", error);
+                alert("Failed to add work history: " + error.message);
+            }
+        });
+
+        document.getElementById('addCredential').addEventListener('click', async () => {
+            try {
+                const issuer = document.getElementById('issuer').value.trim();
+                const title = document.getElementById('credentialTitle').value.trim();
+                const description = document.getElementById('credentialDescription').value.trim();
+                if (!issuer || !title || !description) {
+                    alert("Please fill all credential fields.");
+                    return;
+                }
+                await contract.methods.addCredential(issuer, title, description).send({ from: accounts[0], gas: 1000000 });
+                loadCredentials();
+                alert("Credential added successfully!");
+            } catch (error) {
+                console.error("Error adding credential:", error);
+                alert("Failed to add credential: " + error.message);
+            }
+        });
+
+        document.getElementById('loadWorkerHistory').addEventListener('click', async () => {
+            try {
+                const workerAddress = document.getElementById('workerAddress').value.trim();
+                if (!workerAddress || !web3.utils.isAddress(workerAddress)) {
+                    alert("Please enter a valid worker address.");
+                    return;
+                }
+                loadWorkHistory(workerAddress);
+            } catch (error) {
+                console.error("Error loading worker history:", error);
+                alert("Failed to load worker history: " + error.message);
+            }
+        });
+
+        async function verifyWork(workerAddress, index) {
+            try {
+                await contract.methods.verifyWork(workerAddress, index).send({ from: accounts[0], gas: 2000000 });
+                loadWorkHistory(workerAddress);
+                alert("Work verified successfully!");
+            } catch (error) {
+                console.error("Error verifying work:", error);
+                alert("Failed to verify work: " + error.message);
+            }
+        }
+
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html>
